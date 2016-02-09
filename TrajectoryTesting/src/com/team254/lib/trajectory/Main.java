@@ -52,8 +52,6 @@ public class Main {
 		return true;
 	}
 
-	
-
 	public static void main(String[] args) {
 		String directory = "C:/Users/ttremblay/Documents/GitHub/TrajectoryPlayground/TrajectoryTesting/Paths";
 		if (args.length >= 1) {
@@ -79,9 +77,9 @@ public class Main {
 			// Remember that this is for the GO LEFT CASE!
 			WaypointSequence p = new WaypointSequence(10);
 			p.addWaypoint(new WaypointSequence.Waypoint(0, 0, 0));
-			p.addWaypoint(new WaypointSequence.Waypoint(3, 0, 0));
-			p.addWaypoint(new WaypointSequence.Waypoint(8, -3, 0));
-			p.addWaypoint(new WaypointSequence.Waypoint(10.5, -6, 279.0 * Math.PI / 180.0));
+			p.addWaypoint(new WaypointSequence.Waypoint(5, 0, 0));
+			p.addWaypoint(new WaypointSequence.Waypoint(8, 1, 0));
+			p.addWaypoint(new WaypointSequence.Waypoint(10.5, 1, 0));
 
 			Path path = PathGenerator.makePath(p, config, kWheelbaseWidth, path_name);
 
@@ -90,29 +88,43 @@ public class Main {
 			String serialized = js.serialize(path);
 			// System.out.print(serialized);
 			String fullpath = joinPath(directory, path_name + ".txt");
+			String leftPath = joinPath(directory, path_name + "_SRX_Left_JSON.json");
+			String rightPath = joinPath(directory, path_name + "_SRX_Right_JSON.json");
+			
 			if (!writeFile(fullpath, serialized)) {
 				System.err.println(fullpath + " could not be written!!!!1");
 				System.exit(1);
 			} else {
 				System.out.println("Wrote " + fullpath);
-				
-				SwingUtilities.invokeLater(new Runnable() {
-		            @Override
-		            public void run() {
-		                new JFXPanel(); // this will prepare JavaFX toolkit and environment
-		                Platform.runLater(new Runnable() {
-		                    @Override
-		                    public void run() {
-		                    	SRXTranslator srxt = new SRXTranslator();
-		                    	CombinedSRXMotionProfile combined = srxt.getSRXProfileFromChezyPath(fullpath, 4, 2.54);
-		        				Plotter pl = new Plotter();
-		                    	pl.plotChezyTrajectory(path);
-		                    }
-		                });
-		            }
-		        });
 
-				
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						new JFXPanel(); // this will prepare JavaFX toolkit and
+										// environment
+						Platform.runLater(new Runnable() {
+							@Override
+							public void run() {
+								SRXTranslator srxt = new SRXTranslator();
+								CombinedSRXMotionProfile combined = srxt.getSRXProfileFromChezyPath(fullpath, 4, 2.54);
+								String leftJSON = combined.leftProfile.toJSON();
+								String rightJSON = combined.rightProfile.toJSON();
+
+								if (!writeFile(leftPath, leftJSON)) {
+									System.err.println(leftPath + " could not be written!!!!1");
+									System.exit(1);
+								} else if (!writeFile(rightPath, rightJSON)) {
+									System.err.println(rightPath + " could not be written!!!!1");
+									System.exit(1);
+								} else {
+									Plotter pl = new Plotter();
+									pl.plotChezyTrajectory(path);
+								}
+							}
+						});
+					}
+				});
+
 			}
 		}
 	}

@@ -6,6 +6,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import com.team254.lib.trajectory.io.*;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 
 public class SRXTranslator {
 
@@ -22,6 +24,29 @@ public class SRXTranslator {
 		public int numPoints;
 		// Position (rotations) Velocity (RPM) Duration (ms)
 		public double[][] points;
+		
+		public String toJSON()
+		{
+			StringBuilder sb = new StringBuilder();
+			JSONObject obj = new JSONObject(); 
+			obj.put("numPoints",numPoints); 
+			//obj.put("points", points); 
+			
+			
+			JSONArray list = new JSONArray(); 
+			for (int i = 0; i < points.length; i++) {
+				JSONObject point = new JSONObject();
+				point.put("pos", points[i][0]);
+				point.put("vel", points[i][1]);
+				point.put("dt", points[i][2]);
+				
+				list.add(point);
+			}
+			
+			obj.put("points",list);
+			//System.out.print(obj); 
+			return obj.toString(); 
+		}
 
 	}
 
