@@ -88,8 +88,8 @@ public class Main {
 			String serialized = js.serialize(path);
 			// System.out.print(serialized);
 			String fullpath = joinPath(directory, path_name + ".txt");
-			String leftPath = joinPath(directory, path_name + "_SRX_Left_JSON.json");
-			String rightPath = joinPath(directory, path_name + "_SRX_Right_JSON.json");
+			String leftPath = joinPath(directory, path_name + "_SRX_Left.json");
+			String rightPath = joinPath(directory, path_name + "_SRX_Right.json");
 			
 			if (!writeFile(fullpath, serialized)) {
 				System.err.println(fullpath + " could not be written!!!!1");
