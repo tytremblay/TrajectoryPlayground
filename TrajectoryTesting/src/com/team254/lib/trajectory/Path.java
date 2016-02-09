@@ -8,13 +8,13 @@ import com.team254.lib.trajectory.Trajectory.Segment;
  * @author Jared341
  */
 public class Path {
-  protected Trajectory.Pair go_left_pair_;
+  protected Trajectory.Pair pair;
   protected String name_;
   protected boolean go_left_;
   
   public Path(String name, Trajectory.Pair go_left_pair) {
     name_ = name;
-    go_left_pair_ = go_left_pair;
+    pair = go_left_pair;
     go_left_ = true;
   }
   
@@ -26,26 +26,26 @@ public class Path {
   
   public void goLeft() { 
     go_left_ = true; 
-    go_left_pair_.left.setInvertedY(false);
-    go_left_pair_.right.setInvertedY(false);
+    pair.left.setInvertedY(false);
+    pair.right.setInvertedY(false);
   }
   
   public void goRight() {
     go_left_ = false; 
-    go_left_pair_.left.setInvertedY(true);
-    go_left_pair_.right.setInvertedY(true);
+    pair.left.setInvertedY(true);
+    pair.right.setInvertedY(true);
   }
   
   public Trajectory getLeftWheelTrajectory() {
-    return (go_left_ ? go_left_pair_.left : go_left_pair_.right);
+    return (go_left_ ? pair.left : pair.right);
   }
   
   public Trajectory getRightWheelTrajectory() {
-    return (go_left_ ? go_left_pair_.right : go_left_pair_.left);
+    return (go_left_ ? pair.right : pair.left);
   }
   
   public Trajectory.Pair getPair() {
-    return go_left_pair_;
+    return pair;
   }
 
   public double getEndHeading() {
