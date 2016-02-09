@@ -39,51 +39,23 @@ public class SRXTranslator {
 
 	//Reads a text file generated from 254's trajectory planning software and 
 	//creates a CombinedSRXMotionProfile from it
-	public CombinedSRXMotionProfile getSRXProfileFromChezyTrajectory(String chezyTrajectoryLoc, double wheelDiameterInches, double gearReduction) {
+	public CombinedSRXMotionProfile getSRXProfileFromChezyPath(String chezyTrajectoryLoc, double wheelDiameterInches, double gearReduction) {
 
 		TextFileDeserializer ds = new TextFileDeserializer();  //254's deserializer
 		String serializedChezyTrajectory; // string that is read in from the file
-		Path chezyTrajectory; //254 path to deserialize into
+		Path chezyPath; //254 path to deserialize into
 		
 		try {
 			//read the file
 			serializedChezyTrajectory = readFile(chezyTrajectoryLoc, StandardCharsets.UTF_8);
 			//deserialize from the string to a path object
-			chezyTrajectory = ds.deserialize(serializedChezyTrajectory);
+			chezyPath = ds.deserialize(serializedChezyTrajectory);
 			
 			//create an array of points for the SRX
-			double[][]leftPoints = new double[chezyTrajectory.pair.left.segments_.length][3];
-			
-			//Fill that array
-			for (int i = 0; i < chezyTrajectory.pair.left.segments_.length; i++) {
-				//translate from feet to rotations
-				double wheelRotations = chezyTrajectory.pair.left.segments_[i].pos*12/(wheelDiameterInches * Math.PI);
-				double encoderRotations = wheelRotations * gearReduction;
-				leftPoints[i][0] = encoderRotations;
-				//translate from fps to rpm
-				double fpm = chezyTrajectory.pair.left.segments_[i].vel * 60;
-				double rpm = fpm * 12 / (wheelDiameterInches * Math.PI);
-				double encoderRpm = rpm * gearReduction;
-				leftPoints[i][1] = encoderRpm;
-				//translate from seconds to milliseconds 
-				leftPoints[i][2] = chezyTrajectory.pair.left.segments_[i].dt*1000;
-			}
+			double[][]leftPoints = extractSRXPointsFromChezyTrajectory(chezyPath.pair.left, wheelDiameterInches, gearReduction);
 			
 			//do it again for the right side
-			double[][]rightPoints = new double[chezyTrajectory.pair.right.segments_.length][3];
-			for (int i = 0; i < chezyTrajectory.pair.right.segments_.length; i++) {
-				//translate from feet to rotations
-				double wheelRotations = chezyTrajectory.pair.right.segments_[i].pos*12/(wheelDiameterInches * Math.PI);
-				double encoderRotations = wheelRotations * gearReduction;
-				leftPoints[i][0] = encoderRotations;
-				//translate from fps to rpm
-				double fpm = chezyTrajectory.pair.right.segments_[i].vel * 60;
-				double rpm = fpm * 12 / (wheelDiameterInches * Math.PI);
-				double encoderRpm = rpm * gearReduction;
-				leftPoints[i][1] = encoderRpm;
-				//translate from seconds to milliseconds 
-				leftPoints[i][2] = chezyTrajectory.pair.right.segments_[i].dt*1000;
-			}
+			double[][]rightPoints = extractSRXPointsFromChezyTrajectory(chezyPath.pair.right, wheelDiameterInches, gearReduction);
 			
 			//create the motion profile objects
 			SRXMotionProfile left = new SRXMotionProfile(leftPoints.length,leftPoints);
@@ -99,6 +71,50 @@ public class SRXTranslator {
 		
 		return null;
 
+	}
+	
+	public double[][] extractSRXPointsFromChezyTrajectory(Trajectory traj, double wheelDiameterInches, double gearReduction)
+	{		
+		//create an array of points for the SRX
+		double[][]points = new double[traj.segments_.length][3];
+		
+		//Fill that array
+		for (int i = 0; i < traj.segments_.length; i++) {
+			
+			//translate from feet to rotations
+			points[i][0] = convertFeetToEncoderRotations(traj.segments_[i].pos, wheelDiameterInches, gearReduction);
+			
+			//translate from fps to rpm				
+			points[i][1] = convertFpsToEncoderRpm(traj.segments_[i].vel, wheelDiameterInches, gearReduction);
+			
+			//translate from seconds to milliseconds 
+			points[i][2] = traj.segments_[i].dt*1000;
+		}
+		
+		return points;
+	}
+	
+	public double convertFpsToEncoderRpm(double fps, double wheelDiameterInches, double gearReduction)
+	{
+		//feet per minute
+		double fpm = fps * 60;
+		//wheel rpm
+		double rpm = fpm * 12 / (wheelDiameterInches * Math.PI);
+		//encoder rpm
+		double encoderRpm = rpm * gearReduction;
+		
+		return encoderRpm;
+	}
+	
+	//convert 254's distance units of feet to SRX's distance units of encoder rotations
+	public double convertFeetToEncoderRotations(double feet, double wheelDiameterInches, double gearReduction)
+	{
+		//convert feet to wheel rotations using the circumference of the wheel
+		double wheelRotations = feet*12/(wheelDiameterInches * Math.PI);
+		
+		//convert wheel rotations to encoder rotations using the recuction between the two
+		double encoderRotations = wheelRotations * gearReduction;
+		return encoderRotations;
 	}
 
 	static String readFile(String path, Charset encoding) throws IOException {

@@ -10,12 +10,12 @@ import com.team254.lib.trajectory.Trajectory.Segment;
 public class Path {
   protected Trajectory.Pair pair;
   protected String name_;
-  protected boolean go_left_;
+  protected boolean goLeft;
   
-  public Path(String name, Trajectory.Pair go_left_pair) {
+  public Path(String name, Trajectory.Pair newPair) {
     name_ = name;
-    pair = go_left_pair;
-    go_left_ = true;
+    pair = newPair;
+    goLeft = true;
   }
   
   public Path() {
@@ -25,23 +25,23 @@ public class Path {
   public String getName() { return name_; }
   
   public void goLeft() { 
-    go_left_ = true; 
+    goLeft = true; 
     pair.left.setInvertedY(false);
     pair.right.setInvertedY(false);
   }
   
   public void goRight() {
-    go_left_ = false; 
+    goLeft = false; 
     pair.left.setInvertedY(true);
     pair.right.setInvertedY(true);
   }
   
   public Trajectory getLeftWheelTrajectory() {
-    return (go_left_ ? pair.left : pair.right);
+    return (goLeft ? pair.left : pair.right);
   }
   
   public Trajectory getRightWheelTrajectory() {
-    return (go_left_ ? pair.right : pair.left);
+    return (goLeft ? pair.right : pair.left);
   }
   
   public Trajectory.Pair getPair() {

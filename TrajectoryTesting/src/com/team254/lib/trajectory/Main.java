@@ -104,7 +104,7 @@ public class Main {
 		                    @Override
 		                    public void run() {
 		                    	SRXTranslator srxt = new SRXTranslator();
-		                    	CombinedSRXMotionProfile combined = srxt.getSRXProfileFromChezyTrajectory(fullpath, 4, 2.54);
+		                    	CombinedSRXMotionProfile combined = srxt.getSRXProfileFromChezyPath(fullpath, 4, 2.54);
 		        				Plotter pl = new Plotter();
 		                    	pl.plotChezyTrajectory(path);
 		                    }
