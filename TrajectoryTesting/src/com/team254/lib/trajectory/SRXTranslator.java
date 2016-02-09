@@ -39,7 +39,7 @@ public class SRXTranslator {
 
 	//Reads a text file generated from 254's trajectory planning software and 
 	//creates a CombinedSRXMotionProfile from it
-	public CombinedSRXMotionProfile getSRXProfileFromChezyTrajectory(String chezyTrajectoryLoc, double wheelDiameter, double gearReduction) {
+	public CombinedSRXMotionProfile getSRXProfileFromChezyTrajectory(String chezyTrajectoryLoc, double wheelDiameterInches, double gearReduction) {
 
 		TextFileDeserializer ds = new TextFileDeserializer();  //254's deserializer
 		String serializedChezyTrajectory; // string that is read in from the file
@@ -56,10 +56,15 @@ public class SRXTranslator {
 			
 			//Fill that array
 			for (int i = 0; i < chezyTrajectory.go_left_pair_.left.segments_.length; i++) {
-				//TODO: translate from feet to rotations
-				leftPoints[i][0] = chezyTrajectory.go_left_pair_.left.segments_[i].pos;
-				//TODO: translate from fps to rpm
-				leftPoints[i][1] = chezyTrajectory.go_left_pair_.left.segments_[i].vel;
+				//translate from feet to rotations
+				double wheelRotations = chezyTrajectory.go_left_pair_.left.segments_[i].pos*12/(wheelDiameterInches * Math.PI);
+				double encoderRotations = wheelRotations * gearReduction;
+				leftPoints[i][0] = encoderRotations;
+				//translate from fps to rpm
+				double fpm = chezyTrajectory.go_left_pair_.left.segments_[i].vel * 60;
+				double rpm = fpm * 12 / (wheelDiameterInches * Math.PI);
+				double encoderRpm = rpm * gearReduction;
+				leftPoints[i][1] = encoderRpm;
 				//translate from seconds to milliseconds 
 				leftPoints[i][2] = chezyTrajectory.go_left_pair_.left.segments_[i].dt*1000;
 			}
@@ -67,12 +72,17 @@ public class SRXTranslator {
 			//do it again for the right side
 			double[][]rightPoints = new double[chezyTrajectory.go_left_pair_.right.segments_.length][3];
 			for (int i = 0; i < chezyTrajectory.go_left_pair_.right.segments_.length; i++) {
-				//TODO: translate from feet to rotations
-				rightPoints[i][0] = chezyTrajectory.go_left_pair_.right.segments_[i].pos;
-				//TODO: translate from fps to rpm
-				rightPoints[i][1] = chezyTrajectory.go_left_pair_.right.segments_[i].vel;
+				//translate from feet to rotations
+				double wheelRotations = chezyTrajectory.go_left_pair_.right.segments_[i].pos*12/(wheelDiameterInches * Math.PI);
+				double encoderRotations = wheelRotations * gearReduction;
+				leftPoints[i][0] = encoderRotations;
+				//translate from fps to rpm
+				double fpm = chezyTrajectory.go_left_pair_.right.segments_[i].vel * 60;
+				double rpm = fpm * 12 / (wheelDiameterInches * Math.PI);
+				double encoderRpm = rpm * gearReduction;
+				leftPoints[i][1] = encoderRpm;
 				//translate from seconds to milliseconds 
-				rightPoints[i][2] = chezyTrajectory.go_left_pair_.right.segments_[i].dt*1000;
+				leftPoints[i][2] = chezyTrajectory.go_left_pair_.right.segments_[i].dt*1000;
 			}
 			
 			//create the motion profile objects
