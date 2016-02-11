@@ -4,24 +4,10 @@ import com.team254.lib.trajectory.Path;
 import com.team254.lib.trajectory.PathGenerator;
 import com.team254.lib.trajectory.TrajectoryGenerator;
 import com.team254.lib.trajectory.WaypointSequence;
-import com.team254.lib.trajectory.io.TextFileSerializer;
 import com.team319.lib.PathWriter;
 import com.team319.lib.SRXTranslator;
 import com.team319.lib.SRXTranslator.CombinedSRXMotionProfile;
-import com.team319.lib.SRXTranslator.SRXMotionProfile;
 import com.team319.ui.PathViewer;
-import com.team319.ui.Plotter;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import javax.swing.SwingUtilities;
-
-import org.json.simple.parser.ParseException;
-
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
 
 /**
  *
@@ -57,7 +43,10 @@ public class Main {
 			Path path = PathGenerator.makePath(p, config, kWheelbaseWidth, PathWriter.PATH_NAME);
 
 			SRXTranslator srxt = new SRXTranslator();
-			CombinedSRXMotionProfile combined = srxt.getSRXProfileFromChezyPath(path, 5.875, 2.778);
+			CombinedSRXMotionProfile combined = srxt.getSRXProfileFromChezyPath(path, 5.875, 1.48363636);
+
+
+			combined.leftProfile.toJSON();
 
 
 			if(!PathWriter.writePath(path, combined)){
