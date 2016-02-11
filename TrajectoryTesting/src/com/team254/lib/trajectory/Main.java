@@ -1,6 +1,7 @@
 package com.team254.lib.trajectory;
 
 import com.team254.lib.trajectory.SRXTranslator.CombinedSRXMotionProfile;
+import com.team254.lib.trajectory.SRXTranslator.SRXMotionProfile;
 import com.team254.lib.trajectory.io.JavaSerializer;
 import com.team254.lib.trajectory.io.JavaStringSerializer;
 import com.team254.lib.trajectory.io.Plotter;
@@ -12,6 +13,9 @@ import java.io.IOException;
 import java.lang.management.PlatformManagedObject;
 
 import javax.swing.SwingUtilities;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -116,7 +120,14 @@ public class Main {
 								} else if (!writeFile(rightPath, rightJSON)) {
 									System.err.println(rightPath + " could not be written!!!!1");
 									System.exit(1);
-								} else {
+								} else { 
+									SRXMotionProfile leftImportedProfile;
+									try {
+										leftImportedProfile = srxt.importSRXJSON(leftPath);
+									} catch (ParseException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									} 
 									Plotter pl = new Plotter();
 									pl.plotChezyTrajectory(path);
 								}
