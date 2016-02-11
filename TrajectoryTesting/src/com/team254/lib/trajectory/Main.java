@@ -47,7 +47,7 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		String directory = "C:/Users/ttremblay/Documents/GitHub/TrajectoryPlayground/TrajectoryTesting/Paths";
+		String directory = "Paths";
 		if (args.length >= 1) {
 			directory = args[0];
 		}
@@ -84,7 +84,7 @@ public class Main {
 			String fullpath = joinPath(directory, path_name + ".txt");
 			String leftPath = joinPath(directory, path_name + "_SRX_Left.json");
 			String rightPath = joinPath(directory, path_name + "_SRX_Right.json");
-			
+
 			if (!writeFile(fullpath, serialized)) {
 				System.err.println(fullpath + " could not be written!!!!1");
 				System.exit(1);
@@ -110,7 +110,7 @@ public class Main {
 								} else if (!writeFile(rightPath, rightJSON)) {
 									System.err.println(rightPath + " could not be written!!!!1");
 									System.exit(1);
-								} else { 
+								} else {
 									SRXMotionProfile leftImportedProfile;
 									SRXMotionProfile rightImportedProfile;
 									try {
@@ -119,7 +119,7 @@ public class Main {
 									} catch (ParseException e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
-									} 
+									}
 									Plotter pl = new Plotter();
 									pl.plotChezyTrajectory(path);
 								}
