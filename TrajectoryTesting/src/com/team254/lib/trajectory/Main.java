@@ -2,28 +2,18 @@ package com.team254.lib.trajectory;
 
 import com.team254.lib.trajectory.SRXTranslator.CombinedSRXMotionProfile;
 import com.team254.lib.trajectory.SRXTranslator.SRXMotionProfile;
-import com.team254.lib.trajectory.io.JavaSerializer;
-import com.team254.lib.trajectory.io.JavaStringSerializer;
 import com.team254.lib.trajectory.io.Plotter;
 import com.team254.lib.trajectory.io.TextFileSerializer;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.management.PlatformManagedObject;
-
 import javax.swing.SwingUtilities;
 
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javafx.event.EventHandler;
-import javafx.scene.SceneBuilder;
-import javafx.scene.control.LabelBuilder;
-import javafx.scene.text.Font;
-import javafx.stage.*;
 
 /**
  *
@@ -122,8 +112,10 @@ public class Main {
 									System.exit(1);
 								} else { 
 									SRXMotionProfile leftImportedProfile;
+									SRXMotionProfile rightImportedProfile;
 									try {
 										leftImportedProfile = srxt.importSRXJSON(leftPath);
+										rightImportedProfile = srxt.importSRXJSON(rightPath);
 									} catch (ParseException e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
