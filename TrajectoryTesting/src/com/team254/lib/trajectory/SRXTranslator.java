@@ -1,10 +1,13 @@
 package com.team254.lib.trajectory;
 
 import java.io.IOException;
+import java.math.RoundingMode;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
+
 import com.team254.lib.trajectory.io.*;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
@@ -34,11 +37,15 @@ public class SRXTranslator {
 			
 			
 			JSONArray list = new JSONArray(); 
+			DecimalFormat df = new DecimalFormat("#.###");
+			df.setRoundingMode(RoundingMode.HALF_UP);
+			
+			//format the values to 3 decimal places and add to the JSON object
 			for (int i = 0; i < points.length; i++) {
 				JSONObject point = new JSONObject();
-				point.put("pos", points[i][0]);
-				point.put("vel", points[i][1]);
-				point.put("dt", points[i][2]);
+				point.put("pos", df.format(points[i][0]));
+				point.put("vel", df.format(points[i][1]));
+				point.put("dt", df.format(points[i][2]));
 				
 				list.add(point);
 			}
