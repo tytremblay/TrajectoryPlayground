@@ -23,8 +23,8 @@ public class PathWriter {
 		String leftPath = joinFilePaths(DIRECTORY, PATH_NAME + "_SRX_Left.json");
 		String rightPath = joinFilePaths(DIRECTORY, PATH_NAME + "_SRX_Right.json");
 
-		String leftJSON = combined.leftProfile.toJsonString();
-		String rightJSON = combined.rightProfile.toJsonString();
+		String leftJSON = combined.leftProfile.toJSON();
+		String rightJSON = combined.rightProfile.toJSON();
 
 		if (!writeFile(fullpath, serialized)) {
 			System.err.println(fullpath + " could not be written!!!!1");

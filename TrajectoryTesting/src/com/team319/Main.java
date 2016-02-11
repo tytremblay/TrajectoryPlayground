@@ -11,7 +11,6 @@ import com.team319.lib.SRXTranslator.CombinedSRXMotionProfile;
 import com.team319.lib.SRXTranslator.SRXMotionProfile;
 import com.team319.ui.PathViewer;
 import com.team319.ui.Plotter;
-import com.team319.web.WebServer;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -31,8 +30,6 @@ import javafx.embed.swing.JFXPanel;
 public class Main {
 
 	public static void main(String[] args) {
-
-		WebServer.startServer();
 
 		TrajectoryGenerator.Config config = new TrajectoryGenerator.Config();
 		config.dt = .01;
@@ -61,9 +58,6 @@ public class Main {
 
 			SRXTranslator srxt = new SRXTranslator();
 			CombinedSRXMotionProfile combined = srxt.getSRXProfileFromChezyPath(path, 5.875, 2.778);
-
-
-			combined.leftProfile.toJsonString();
 
 
 			if(!PathWriter.writePath(path, combined)){
