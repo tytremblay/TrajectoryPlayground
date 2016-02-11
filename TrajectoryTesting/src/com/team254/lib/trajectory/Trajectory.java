@@ -1,7 +1,5 @@
 package com.team254.lib.trajectory;
 
-import com.team254.lib.util.ChezyMath;
-
 /**
  * Implementation of a Trajectory using arrays as the underlying storage
  * mechanism.
@@ -9,7 +7,7 @@ import com.team254.lib.util.ChezyMath;
  * @author Jared341
  */
 public class Trajectory {
-  
+
   public static class Pair {
     public Pair(Trajectory left, Trajectory right) {
       this.left = left;
@@ -65,11 +63,11 @@ public class Trajectory {
       segments_[i] = new Segment();
     }
   }
-  
+
   public Trajectory(Segment[] segments) {
     segments_ = segments;
   }
-  
+
   public void setInvertedY(boolean inverted) {
     inverted_y_ = inverted;
   }
@@ -92,7 +90,7 @@ public class Trajectory {
       return new Segment();
     }
   }
-  
+
   public void setSegment(int index, Segment segment) {
     if (index < getNumSegments()) {
       segments_[index] = segment;
@@ -128,7 +126,7 @@ public class Trajectory {
     cloned.segments_ = copySegments(this.segments_);
     return cloned;
   }
-  
+
   private Segment[] copySegments(Segment[] tocopy) {
     Segment[] copied = new Segment[tocopy.length];
     for (int i = 0; i < tocopy.length; ++i) {

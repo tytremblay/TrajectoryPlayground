@@ -1,9 +1,7 @@
-package com.team254.lib.trajectory.io;
+package com.team319.ui;
 
 import com.team254.lib.trajectory.Path;
-import com.team254.lib.trajectory.SRXTranslator.CombinedSRXMotionProfile;
 
-import javafx.application.*;
 import javafx.scene.*;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
@@ -11,9 +9,10 @@ import javafx.scene.chart.XYChart;
 import javafx.stage.*;
 
 public class Plotter {
-	
+
 	public Plotter(){}
-	
+
+	@SuppressWarnings("rawtypes")
 	public void plotChezyTrajectory(Path path) {
 		Stage stage = new Stage();
 		stage.setTitle("Scatter Chart Sample");
@@ -35,11 +34,11 @@ public class Plotter {
 		for (int i = 0; i < path.getPair().left.getNumSegments(); i++) {
 			series1.getData().add(new XYChart.Data(path.getPair().right.getSegment(i).x, path.getPair().right.getSegment(i).y));
 		}
-		
+
 		sc.getData().addAll(series1, series2);
 		Scene scene = new Scene(sc, 1000, 800);
 		scene.getStylesheets().clear();
-		scene.getStylesheets().add(getClass().getResource("Plotter.css").toExternalForm());		
+		scene.getStylesheets().add(getClass().getResource("Plotter.css").toExternalForm());
 		stage.setScene(scene);
 		stage.show();
 	}
