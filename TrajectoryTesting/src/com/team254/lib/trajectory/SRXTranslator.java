@@ -72,42 +72,23 @@ public class SRXTranslator {
 
 	// Reads a text file generated from 254's trajectory planning software and
 	// creates a CombinedSRXMotionProfile from it
-	public CombinedSRXMotionProfile getSRXProfileFromChezyPath(String chezyTrajectoryLoc, double wheelDiameterInches,
+	public CombinedSRXMotionProfile getSRXProfileFromChezyPath(Path chezyPath, double wheelDiameterInches,
 			double gearReduction) {
 
-		TextFileDeserializer ds = new TextFileDeserializer(); // 254's
-																// deserializer
-		String serializedChezyTrajectory; // string that is read in from the
-											// file
-		Path chezyPath; // 254 path to deserialize into
+		// create an array of points for the SRX
+		double[][] leftPoints = extractSRXPointsFromChezyTrajectory(chezyPath.pair.left, wheelDiameterInches,
+				gearReduction);
 
-		try {
-			// read the file
-			serializedChezyTrajectory = readFile(chezyTrajectoryLoc, StandardCharsets.UTF_8);
-			// deserialize from the string to a path object
-			chezyPath = ds.deserialize(serializedChezyTrajectory);
+		// do it again for the right side
+		double[][] rightPoints = extractSRXPointsFromChezyTrajectory(chezyPath.pair.right, wheelDiameterInches,
+				gearReduction);
 
-			// create an array of points for the SRX
-			double[][] leftPoints = extractSRXPointsFromChezyTrajectory(chezyPath.pair.left, wheelDiameterInches,
-					gearReduction);
+		// create the motion profile objects
+		SRXMotionProfile left = new SRXMotionProfile(leftPoints.length, leftPoints);
+		SRXMotionProfile right = new SRXMotionProfile(rightPoints.length, rightPoints);
 
-			// do it again for the right side
-			double[][] rightPoints = extractSRXPointsFromChezyTrajectory(chezyPath.pair.right, wheelDiameterInches,
-					gearReduction);
-
-			// create the motion profile objects
-			SRXMotionProfile left = new SRXMotionProfile(leftPoints.length, leftPoints);
-			SRXMotionProfile right = new SRXMotionProfile(rightPoints.length, rightPoints);
-
-			// Combine
-			return new CombinedSRXMotionProfile(left, right);
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
+		// Combine
+		return new CombinedSRXMotionProfile(left, right);
 
 	}
 
