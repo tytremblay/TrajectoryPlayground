@@ -37,7 +37,7 @@ public class Main {
 		config.max_jerk = 60.0;
 		config.max_vel = 15.0;
 
-		final double kWheelbaseWidth = 25.5 / 12;
+		final double kWheelbaseWidth = 23.25 / 12;
 		{
 			// Path name must be a valid Java class name.
 			config.dt = .01;
