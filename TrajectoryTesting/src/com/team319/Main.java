@@ -57,7 +57,7 @@ public class Main {
 			Path path = PathGenerator.makePath(p, config, kWheelbaseWidth, PathWriter.PATH_NAME);
 
 			SRXTranslator srxt = new SRXTranslator();
-			CombinedSRXMotionProfile combined = srxt.getSRXProfileFromChezyPath(path, 4, 2.54);
+			CombinedSRXMotionProfile combined = srxt.getSRXProfileFromChezyPath(path, 5.875, 2.778);
 
 
 			if(!PathWriter.writePath(path, combined)){
