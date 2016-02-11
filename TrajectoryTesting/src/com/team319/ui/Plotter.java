@@ -1,7 +1,7 @@
-package com.team254.lib.trajectory.io;
+package com.team319.ui;
 
 import com.team254.lib.trajectory.Path;
-import com.team254.lib.trajectory.SRXTranslator.CombinedSRXMotionProfile;
+import com.team319.lib.SRXTranslator.CombinedSRXMotionProfile;
 
 import javafx.application.*;
 import javafx.scene.*;

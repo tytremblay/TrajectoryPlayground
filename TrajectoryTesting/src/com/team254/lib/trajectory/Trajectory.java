@@ -93,6 +93,11 @@ public class Trajectory {
     }
   }
   
+  public Segment[] getSegments()
+  {
+	  return segments_;
+  }
+  
   public void setSegment(int index, Segment segment) {
     if (index < getNumSegments()) {
       segments_[index] = segment;

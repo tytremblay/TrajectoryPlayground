@@ -1,4 +1,4 @@
-package com.team254.lib.trajectory;
+package com.team319.lib;
 
 import java.io.IOException;
 import java.math.RoundingMode;
@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 
+import com.team254.lib.trajectory.Path;
+import com.team254.lib.trajectory.Trajectory;
 import com.team254.lib.trajectory.io.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -76,11 +78,11 @@ public class SRXTranslator {
 			double gearReduction) {
 
 		// create an array of points for the SRX
-		double[][] leftPoints = extractSRXPointsFromChezyTrajectory(chezyPath.pair.left, wheelDiameterInches,
+		double[][] leftPoints = extractSRXPointsFromChezyTrajectory(chezyPath.getPair().left, wheelDiameterInches,
 				gearReduction);
 
 		// do it again for the right side
-		double[][] rightPoints = extractSRXPointsFromChezyTrajectory(chezyPath.pair.right, wheelDiameterInches,
+		double[][] rightPoints = extractSRXPointsFromChezyTrajectory(chezyPath.getPair().right, wheelDiameterInches,
 				gearReduction);
 
 		// create the motion profile objects
@@ -95,19 +97,19 @@ public class SRXTranslator {
 	public double[][] extractSRXPointsFromChezyTrajectory(Trajectory traj, double wheelDiameterInches,
 			double gearReduction) {
 		// create an array of points for the SRX
-		double[][] points = new double[traj.segments_.length][3];
+		double[][] points = new double[traj.getSegments().length][3];
 
 		// Fill that array
-		for (int i = 0; i < traj.segments_.length; i++) {
+		for (int i = 0; i < traj.getSegments().length; i++) {
 
 			// translate from feet to rotations
-			points[i][0] = convertFeetToEncoderRotations(traj.segments_[i].pos, wheelDiameterInches, gearReduction);
+			points[i][0] = convertFeetToEncoderRotations(traj.getSegments()[i].pos, wheelDiameterInches, gearReduction);
 
 			// translate from fps to rpm
-			points[i][1] = convertFpsToEncoderRpm(traj.segments_[i].vel, wheelDiameterInches, gearReduction);
+			points[i][1] = convertFpsToEncoderRpm(traj.getSegments()[i].vel, wheelDiameterInches, gearReduction);
 
 			// translate from seconds to milliseconds
-			points[i][2] = traj.segments_[i].dt * 1000;
+			points[i][2] = traj.getSegments()[i].dt * 1000;
 		}
 
 		return points;

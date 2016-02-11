@@ -6,8 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import com.team254.lib.trajectory.Path;
-import com.team254.lib.trajectory.SRXTranslator.CombinedSRXMotionProfile;
 import com.team254.lib.trajectory.io.TextFileSerializer;
+import com.team319.lib.SRXTranslator.CombinedSRXMotionProfile;
 
 public class PathWriter {
 
@@ -19,9 +19,9 @@ public class PathWriter {
 		TextFileSerializer js = new TextFileSerializer();
 		String serialized = js.serialize(path);
 		// System.out.print(serialized);
-		String fullpath = joinPath(DIRECTORY, PATH_NAME + ".txt");
-		String leftPath = joinPath(DIRECTORY, PATH_NAME + "_SRX_Left.json");
-		String rightPath = joinPath(DIRECTORY, PATH_NAME + "_SRX_Right.json");
+		String fullpath = joinFilePaths(DIRECTORY, PATH_NAME + ".txt");
+		String leftPath = joinFilePaths(DIRECTORY, PATH_NAME + "_SRX_Left.json");
+		String rightPath = joinFilePaths(DIRECTORY, PATH_NAME + "_SRX_Right.json");
 
 		String leftJSON = combined.leftProfile.toJSON();
 		String rightJSON = combined.rightProfile.toJSON();
@@ -39,9 +39,9 @@ public class PathWriter {
 		return true;
 	}
 
-	private static boolean writeFile(String path, String data) {
+	private static boolean writeFile(String filePath, String data) {
 		try {
-			File file = new File(path);
+			File file = new File(filePath);
 
 			// if file doesnt exists, then create it
 			if (!file.exists()) {
@@ -59,7 +59,7 @@ public class PathWriter {
 		return true;
 	}
 
-	public static String joinPath(String path1, String path2) {
+	public static String joinFilePaths(String path1, String path2) {
 		File file1 = new File(path1);
 		File file2 = new File(file1, path2);
 		return file2.getPath();

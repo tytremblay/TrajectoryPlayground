@@ -2,15 +2,15 @@ package com.team319;
 
 import com.team254.lib.trajectory.Path;
 import com.team254.lib.trajectory.PathGenerator;
-import com.team254.lib.trajectory.SRXTranslator;
-import com.team254.lib.trajectory.SRXTranslator.CombinedSRXMotionProfile;
-import com.team254.lib.trajectory.SRXTranslator.SRXMotionProfile;
 import com.team254.lib.trajectory.TrajectoryGenerator;
 import com.team254.lib.trajectory.WaypointSequence;
-import com.team254.lib.trajectory.io.Plotter;
 import com.team254.lib.trajectory.io.TextFileSerializer;
 import com.team319.lib.PathWriter;
+import com.team319.lib.SRXTranslator;
+import com.team319.lib.SRXTranslator.CombinedSRXMotionProfile;
+import com.team319.lib.SRXTranslator.SRXMotionProfile;
 import com.team319.ui.PathViewer;
+import com.team319.ui.Plotter;
 
 import java.io.BufferedWriter;
 import java.io.File;
