@@ -18,7 +18,7 @@ public class WaypointSequence {
       this.y = y;
       this.theta = theta;
     }
-    
+
     public Waypoint(Waypoint tocopy) {
       this.x = tocopy.x;
       this.y = tocopy.y;
@@ -55,7 +55,7 @@ public class WaypointSequence {
       return null;
     }
   }
-  
+
   public WaypointSequence invertY() {
     WaypointSequence inverted = new WaypointSequence(waypoints_.length);
     inverted.num_waypoints_ = num_waypoints_;
@@ -65,7 +65,7 @@ public class WaypointSequence {
       inverted.waypoints_[i].theta = ChezyMath.boundAngle0to2PiRadians(
               2*Math.PI - inverted.waypoints_[i].theta);
     }
-    
+
     return inverted;
   }
 }

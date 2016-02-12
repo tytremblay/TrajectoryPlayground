@@ -73,6 +73,13 @@ public class SRXTranslator {
 
 		public SRXMotionProfile leftProfile;
 		public SRXMotionProfile rightProfile;
+
+		public JSONObject toJson(){
+			JSONObject combinedProfile = new JSONObject();
+			combinedProfile.put("left", leftProfile.toJson());
+			combinedProfile.put("right",rightProfile.toJson());
+			return combinedProfile;
+		}
 	}
 
 	// Reads a text file generated from 254's trajectory planning software and
@@ -141,23 +148,9 @@ public class SRXTranslator {
 		return encoderRotations;
 	}
 
-	public SRXMotionProfile importSRXJSON(String filePath) throws ParseException {
-		String json;
-		try {
-			json = readFile(filePath, StandardCharsets.UTF_8);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			return null;
-		}
-
-		JSONParser parser = new JSONParser();
-		Object obj;
-
-		obj = parser.parse(json);
-		JSONObject cmd = (JSONObject) obj;
-		int numPoints = ((Long) cmd.get("numPoints")).intValue();
-		JSONArray points = (JSONArray) cmd.get("points");
+	public SRXMotionProfile importSrxJson(JSONObject srxJson) {
+		int numPoints = ((Long) srxJson.get("numPoints")).intValue();
+		JSONArray points = (JSONArray) srxJson.get("points");
 
 		double[][] pointsArray = new double[points.size()][3];
 		if (points != null) {
@@ -172,6 +165,26 @@ public class SRXTranslator {
 		}
 		SRXMotionProfile prof = new SRXMotionProfile(numPoints, pointsArray);
 		return prof;
+
+	}
+
+	public SRXMotionProfile importSrxJsonFile(String filePath) throws ParseException {
+		String json;
+		try {
+			json = readFile(filePath, StandardCharsets.UTF_8);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return null;
+		}
+
+		JSONParser parser = new JSONParser();
+		Object obj;
+
+		obj = parser.parse(json);
+		JSONObject srxJson = (JSONObject) obj;
+
+		return importSrxJson(srxJson);
 
 	}
 
