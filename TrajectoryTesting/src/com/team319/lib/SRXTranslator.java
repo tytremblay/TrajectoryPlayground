@@ -33,7 +33,11 @@ public class SRXTranslator {
 		// Position (rotations) Velocity (RPM) Duration (ms)
 		public double[][] points;
 
-		public String toJSON() {
+		public String toJsonString() {
+			return this.toJson().toString();
+		}
+
+		public JSONObject toJson() {
 			StringBuilder sb = new StringBuilder();
 			JSONObject obj = new JSONObject();
 			obj.put("numPoints", numPoints);
@@ -55,9 +59,8 @@ public class SRXTranslator {
 
 			obj.put("points", list);
 			// System.out.print(obj);
-			return obj.toString();
+			return obj;
 		}
-
 	}
 
 	// Combines left and right motion profiles in one object
