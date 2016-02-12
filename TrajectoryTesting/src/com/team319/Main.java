@@ -32,8 +32,6 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		WebServer.startServer();
-
 		TrajectoryGenerator.Config config = new TrajectoryGenerator.Config();
 		config.dt = .01;
 		config.max_acc = 10.0;
