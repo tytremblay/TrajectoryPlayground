@@ -27,15 +27,8 @@ public class TrajectorySocket extends UpdatableWebSocketAdapter {
 	final double kWheelbaseWidth = 23.25 / 12;
 	TrajectoryGenerator.Config config;
 
-    public void onWebSocketClose(int statusCode, String reason) {
-        super.onWebSocketClose(statusCode, reason);
-        WebServer.unregisterSocket(this);
-    }
-
-    public void onWebSocketConnect(Session session) {
-        super.onWebSocketConnect(session);
-        WebServer.registerSocket(this);
-
+    @Override
+    public void initialize() {
         config = new TrajectoryGenerator.Config();
     	config.dt = .01;
     	config.max_acc = 10.0;
@@ -43,12 +36,22 @@ public class TrajectorySocket extends UpdatableWebSocketAdapter {
     	config.max_vel = 15.0;
     }
 
-    public void onWebSocketError(Throwable cause) {
-        System.err.println("WebSocket Error" + cause);
-        WebServer.unregisterSocket(this);
-    }
-
     public void onWebSocketText(String message) {
+
+    	if(message.equalsIgnoreCase("ping")){
+
+    		new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+		    		//TODO: MWT ADD DELAY HERE
+					getRemote().sendStringByFuture("pong");
+
+				}
+			}).start();
+
+    	}
+
         JSONParser parser = new JSONParser();
         JSONObject obj;
         try {
@@ -74,11 +77,7 @@ public class TrajectorySocket extends UpdatableWebSocketAdapter {
 			SRXTranslator srxt = new SRXTranslator();
 			CombinedSRXMotionProfile combined = srxt.getSRXProfileFromChezyPath(path, 5.875, 2.778);
 
-			JSONObject result = new JSONObject();
-			result.put("left", combined.leftProfile.toJson());
-			result.put("right", combined.rightProfile.toJson());
-
-			latestResult = result;
+			latestResult = combined.toJson();
 
 			update();
 		}
