@@ -63,13 +63,13 @@ public class SRXTranslator {
 		return points;
 	}
 
-	public double convertFpsToEncoderRpm(double fps, double wheelDiameterInches, double gearReduction) {
+	public double convertFpsToEncoderRpm(double fps, double wheelDiameterInches, double scaleFactor) {
 		// feet per minute
 		double fpm = fps * 60;
 		// wheel rpm
 		double rpm = fpm * 12 / (wheelDiameterInches * Math.PI);
 		// encoder rpm
-		double encoderRpm = rpm * gearReduction;
+		double encoderRpm = rpm * scaleFactor;
 
 		return encoderRpm;
 	}
