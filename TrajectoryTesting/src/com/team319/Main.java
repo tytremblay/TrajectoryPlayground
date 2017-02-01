@@ -6,8 +6,8 @@ import com.team254.lib.trajectory.TrajectoryGenerator;
 import com.team254.lib.trajectory.WaypointSequence;
 import com.team254.lib.trajectory.io.TextFileSerializer;
 import com.team319.lib.PathWriter;
-import com.team319.lib.SRXTranslator;
-import com.team319.trajectory.CombinedSrxMotionProfile;
+import com.team319.trajectory.SrxTrajectory;
+import com.team319.trajectory.SrxTranslator;
 import com.team319.ui.PathViewer;
 import com.team319.ui.Plotter;
 import com.team319.web.WebServer;
@@ -32,7 +32,7 @@ public class Main {
 	public static void main(String[] args) {
 
 		//TrajectoryGenerator.Config config = new TrajectoryGenerator.Config();
-		CombinedSrxMotionProfile.Config config = new CombinedSrxMotionProfile.Config();
+		SrxTrajectory.Config config = new SrxTrajectory.Config();
 		config.dt = .01;
 		config.max_acc = 10.0;
 		config.max_jerk = 60.0;
@@ -58,8 +58,8 @@ public class Main {
 
 			Path path = PathGenerator.makePath(p, config, config.wheelbase_width, PathWriter.PATH_NAME);
 
-			SRXTranslator srxt = new SRXTranslator();
-			CombinedSrxMotionProfile combined = srxt.getSRXProfileFromChezyPath(path, config);
+			SrxTranslator srxt = new SrxTranslator();
+			SrxTrajectory combined = srxt.getSRXProfileFromChezyPath(path, config);
 
 
 			combined.leftProfile.toJsonString();

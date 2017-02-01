@@ -5,7 +5,7 @@ import org.json.simple.JSONObject;
 import com.team254.lib.trajectory.TrajectoryGenerator;
 
 //Combines left and right motion profiles in one object
-public class CombinedSrxMotionProfile {
+public class SrxTrajectory {
 	public SrxMotionProfile leftProfile;
 	public SrxMotionProfile rightProfile;
 	
@@ -16,12 +16,12 @@ public class CombinedSrxMotionProfile {
 	    public int direction = 1;  //1 = forward, -1 = backward
 	}
 
-	public CombinedSrxMotionProfile(SrxMotionProfile left, SrxMotionProfile right) {
+	public SrxTrajectory(SrxMotionProfile left, SrxMotionProfile right) {
 		this.leftProfile = left;
 		this.rightProfile = right;
 	}
 
-	public CombinedSrxMotionProfile(JSONObject combinedProfile){
+	public SrxTrajectory(JSONObject combinedProfile){
 		leftProfile = new SrxMotionProfile((JSONObject) combinedProfile.get("left"));
 		rightProfile = new SrxMotionProfile((JSONObject) combinedProfile.get("right"));
 	}

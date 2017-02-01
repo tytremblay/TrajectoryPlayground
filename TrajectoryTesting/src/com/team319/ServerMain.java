@@ -6,7 +6,7 @@ import com.team254.lib.trajectory.TrajectoryGenerator;
 import com.team254.lib.trajectory.WaypointSequence;
 import com.team254.lib.trajectory.io.TextFileSerializer;
 import com.team319.lib.PathWriter;
-import com.team319.lib.SRXTranslator;
+import com.team319.trajectory.SrxTranslator;
 import com.team319.ui.PathViewer;
 import com.team319.ui.Plotter;
 import com.team319.web.WebServer;

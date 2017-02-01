@@ -1,4 +1,4 @@
-package com.team319.lib;
+package com.team319.trajectory;
 
 import java.io.IOException;
 import java.math.RoundingMode;
@@ -11,19 +11,17 @@ import java.text.DecimalFormat;
 import com.team254.lib.trajectory.Path;
 import com.team254.lib.trajectory.Trajectory;
 import com.team254.lib.trajectory.io.*;
-import com.team319.trajectory.CombinedSrxMotionProfile;
-import com.team319.trajectory.SrxMotionProfile;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.json.simple.JSONArray;
 
-public class SRXTranslator {
+public class SrxTranslator {
 
 	// Reads a text file generated from 254's trajectory planning software and
 	// creates a CombinedSrxMotionProfile from it
-	public CombinedSrxMotionProfile getSRXProfileFromChezyPath(Path chezyPath, CombinedSrxMotionProfile.Config config) {
+	public SrxTrajectory getSRXProfileFromChezyPath(Path chezyPath, SrxTrajectory.Config config) {
 
 		// create an array of points for the SRX
 		double[][] leftPoints = extractSRXPointsFromChezyTrajectory(chezyPath.getPair().left, config.wheel_dia,
@@ -38,7 +36,7 @@ public class SRXTranslator {
 		SrxMotionProfile right = new SrxMotionProfile(rightPoints.length, rightPoints);
 
 		// Combine
-		return new CombinedSrxMotionProfile(left, right);
+		return new SrxTrajectory(left, right);
 
 	}
 

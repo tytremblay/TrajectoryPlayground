@@ -8,7 +8,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.team319.trajectory.CombinedSrxMotionProfile;
+import com.team319.trajectory.SrxTrajectory;
 
 public class SrxSocket extends WebSocketAdapter {
 
@@ -49,7 +49,7 @@ public class SrxSocket extends WebSocketAdapter {
         JSONObject obj;
         try {
             obj = (JSONObject) parser.parse(message);
-            CombinedSrxMotionProfile profile = new CombinedSrxMotionProfile(obj);
+            SrxTrajectory profile = new SrxTrajectory(obj);
             profile.toString();
         } catch (ParseException e) {
             e.printStackTrace();
