@@ -19,7 +19,7 @@ import org.json.simple.JSONArray;
 
 public class SrxTranslator {
 
-	// Reads a text file generated from 254's trajectory planning software and
+	// Reads a Path object generated from 254's trajectory planning software and
 	// creates a CombinedSrxMotionProfile from it
 	public SrxTrajectory getSRXProfileFromChezyPath(Path chezyPath, SrxTrajectory.Config config) {
 
@@ -74,13 +74,13 @@ public class SrxTranslator {
 
 	// convert 254's distance units of feet to SRX's distance units of encoder
 	// rotations
-	public double convertFeetToEncoderRotations(double feet, double wheelDiameterInches, double gearReduction) {
+	public double convertFeetToEncoderRotations(double feet, double wheelDiameterInches, double scaleFactor) {
 		// convert feet to wheel rotations using the circumference of the wheel
 		double wheelRotations = feet * 12 / (wheelDiameterInches * Math.PI);
 
 		// convert wheel rotations to encoder rotations using the recuction
 		// between the two
-		double encoderRotations = wheelRotations * gearReduction;
+		double encoderRotations = wheelRotations * scaleFactor;
 		return encoderRotations;
 	}
 
