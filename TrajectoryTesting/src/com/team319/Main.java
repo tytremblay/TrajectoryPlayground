@@ -7,8 +7,7 @@ import com.team254.lib.trajectory.WaypointSequence;
 import com.team254.lib.trajectory.io.TextFileSerializer;
 import com.team319.lib.PathWriter;
 import com.team319.lib.SRXTranslator;
-import com.team319.lib.SRXTranslator.CombinedSRXMotionProfile;
-import com.team319.lib.SRXTranslator.SRXMotionProfile;
+import com.team319.trajectory.CombinedSrxMotionProfile;
 import com.team319.ui.PathViewer;
 import com.team319.ui.Plotter;
 import com.team319.web.WebServer;
@@ -32,13 +31,17 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		TrajectoryGenerator.Config config = new TrajectoryGenerator.Config();
+		//TrajectoryGenerator.Config config = new TrajectoryGenerator.Config();
+		CombinedSrxMotionProfile.Config config = new CombinedSrxMotionProfile.Config();
 		config.dt = .01;
 		config.max_acc = 10.0;
 		config.max_jerk = 60.0;
 		config.max_vel = 15.0;
-
-		final double kWheelbaseWidth = 23.25 / 12;
+		config.wheelbase_width = 23.25 / 12;
+		config.wheel_dia = 5.875;
+		config.scale_factor = 2.778;
+		config.direction = -1;
+		
 		{
 			// Path name must be a valid Java class name.
 			config.dt = .01;
@@ -51,14 +54,12 @@ public class Main {
 			// Remember that this is for the GO LEFT CASE!
 			WaypointSequence p = new WaypointSequence(10);
 			p.addWaypoint(new WaypointSequence.Waypoint(0, 0, 0));
-			p.addWaypoint(new WaypointSequence.Waypoint(5, 0, 0));
-			p.addWaypoint(new WaypointSequence.Waypoint(8, 1, 0));
-			p.addWaypoint(new WaypointSequence.Waypoint(10.5, 1, 0));
+			p.addWaypoint(new WaypointSequence.Waypoint(-3, -1, .8));
 
-			Path path = PathGenerator.makePath(p, config, kWheelbaseWidth, PathWriter.PATH_NAME);
+			Path path = PathGenerator.makePath(p, config, config.wheelbase_width, PathWriter.PATH_NAME);
 
 			SRXTranslator srxt = new SRXTranslator();
-			CombinedSRXMotionProfile combined = srxt.getSRXProfileFromChezyPath(path, 5.875, 2.778);
+			CombinedSrxMotionProfile combined = srxt.getSRXProfileFromChezyPath(path, config);
 
 
 			combined.leftProfile.toJsonString();

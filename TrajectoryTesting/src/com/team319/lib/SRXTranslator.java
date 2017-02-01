@@ -11,6 +11,9 @@ import java.text.DecimalFormat;
 import com.team254.lib.trajectory.Path;
 import com.team254.lib.trajectory.Trajectory;
 import com.team254.lib.trajectory.io.*;
+import com.team319.trajectory.CombinedSrxMotionProfile;
+import com.team319.trajectory.SrxMotionProfile;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -18,94 +21,29 @@ import org.json.simple.JSONArray;
 
 public class SRXTranslator {
 
-	// Generic Motion Profile Class
-	public class SRXMotionProfile {
-
-		public SRXMotionProfile(int numPoints, double[][] points) {
-			this.numPoints = numPoints;
-			this.points = points;
-		}
-
-		public SRXMotionProfile() {
-		}
-
-		public int numPoints;
-		// Position (rotations) Velocity (RPM) Duration (ms)
-		public double[][] points;
-
-		public String toJsonString() {
-			return this.toJson().toString();
-		}
-
-		public JSONObject toJson() {
-			StringBuilder sb = new StringBuilder();
-			JSONObject obj = new JSONObject();
-			obj.put("numPoints", numPoints);
-			// obj.put("points", points);
-
-			JSONArray list = new JSONArray();
-			DecimalFormat df = new DecimalFormat("0.000");
-			df.setRoundingMode(RoundingMode.HALF_UP);
-
-			// format the values to 3 decimal places and add to the JSON object
-			for (int i = 0; i < points.length; i++) {
-				JSONObject point = new JSONObject();
-				point.put("pos", Double.parseDouble(df.format(points[i][0])));
-				point.put("vel", Double.parseDouble(df.format(points[i][1])));
-				point.put("dt", points[i][2]);
-
-				list.add(point);
-			}
-
-			obj.put("points", list);
-			// System.out.print(obj);
-			return obj;
-		}
-	}
-
-	// Combines left and right motion profiles in one object
-	public class CombinedSRXMotionProfile {
-
-		public CombinedSRXMotionProfile(SRXMotionProfile left, SRXMotionProfile right) {
-			this.leftProfile = left;
-			this.rightProfile = right;
-		}
-
-		public SRXMotionProfile leftProfile;
-		public SRXMotionProfile rightProfile;
-
-		public JSONObject toJson(){
-			JSONObject combinedProfile = new JSONObject();
-			combinedProfile.put("left", leftProfile.toJson());
-			combinedProfile.put("right",rightProfile.toJson());
-			return combinedProfile;
-		}
-	}
-
 	// Reads a text file generated from 254's trajectory planning software and
-	// creates a CombinedSRXMotionProfile from it
-	public CombinedSRXMotionProfile getSRXProfileFromChezyPath(Path chezyPath, double wheelDiameterInches,
-			double gearReduction) {
+	// creates a CombinedSrxMotionProfile from it
+	public CombinedSrxMotionProfile getSRXProfileFromChezyPath(Path chezyPath, CombinedSrxMotionProfile.Config config) {
 
 		// create an array of points for the SRX
-		double[][] leftPoints = extractSRXPointsFromChezyTrajectory(chezyPath.getPair().left, wheelDiameterInches,
-				gearReduction);
+		double[][] leftPoints = extractSRXPointsFromChezyTrajectory(chezyPath.getPair().left, config.wheel_dia,
+				config.scale_factor, config.direction);
 
 		// do it again for the right side
-		double[][] rightPoints = extractSRXPointsFromChezyTrajectory(chezyPath.getPair().right, wheelDiameterInches,
-				gearReduction);
+		double[][] rightPoints = extractSRXPointsFromChezyTrajectory(chezyPath.getPair().right, config.wheel_dia,
+				config.scale_factor, config.direction);
 
 		// create the motion profile objects
-		SRXMotionProfile left = new SRXMotionProfile(leftPoints.length, leftPoints);
-		SRXMotionProfile right = new SRXMotionProfile(rightPoints.length, rightPoints);
+		SrxMotionProfile left = new SrxMotionProfile(leftPoints.length, leftPoints);
+		SrxMotionProfile right = new SrxMotionProfile(rightPoints.length, rightPoints);
 
 		// Combine
-		return new CombinedSRXMotionProfile(left, right);
+		return new CombinedSrxMotionProfile(left, right);
 
 	}
 
 	public double[][] extractSRXPointsFromChezyTrajectory(Trajectory traj, double wheelDiameterInches,
-			double gearReduction) {
+			double scaleFactor, int direction) {
 		// create an array of points for the SRX
 		double[][] points = new double[traj.getSegments().length][3];
 
@@ -113,10 +51,10 @@ public class SRXTranslator {
 		for (int i = 0; i < traj.getSegments().length; i++) {
 
 			// translate from feet to rotations
-			points[i][0] = convertFeetToEncoderRotations(traj.getSegments()[i].pos, wheelDiameterInches, gearReduction);
+			points[i][0] = direction * convertFeetToEncoderRotations(traj.getSegments()[i].pos, wheelDiameterInches, scaleFactor);
 
 			// translate from fps to rpm
-			points[i][1] = convertFpsToEncoderRpm(traj.getSegments()[i].vel, wheelDiameterInches, gearReduction);
+			points[i][1] = direction * convertFpsToEncoderRpm(traj.getSegments()[i].vel, wheelDiameterInches, scaleFactor);
 
 			// translate from seconds to milliseconds
 			points[i][2] = traj.getSegments()[i].dt * 1000;
@@ -148,7 +86,7 @@ public class SRXTranslator {
 		return encoderRotations;
 	}
 
-	public SRXMotionProfile importSrxJson(JSONObject srxJson) {
+	public SrxMotionProfile importSrxJson(JSONObject srxJson) {
 		int numPoints = ((Long) srxJson.get("numPoints")).intValue();
 		JSONArray points = (JSONArray) srxJson.get("points");
 
@@ -163,12 +101,12 @@ public class SRXTranslator {
 				//System.out.println(pointsArray[i][0] + "," + pointsArray[i][1] + "," + pointsArray[i][2]);
 			}
 		}
-		SRXMotionProfile prof = new SRXMotionProfile(numPoints, pointsArray);
+		SrxMotionProfile prof = new SrxMotionProfile(numPoints, pointsArray);
 		return prof;
 
 	}
 
-	public SRXMotionProfile importSrxJsonFile(String filePath) throws ParseException {
+	public SrxMotionProfile importSrxJsonFile(String filePath) throws ParseException {
 		String json;
 		try {
 			json = readFile(filePath, StandardCharsets.UTF_8);

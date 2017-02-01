@@ -7,8 +7,7 @@ import com.team254.lib.trajectory.WaypointSequence;
 import com.team254.lib.trajectory.WaypointSequence.Waypoint;
 import com.team319.lib.PathWriter;
 import com.team319.lib.SRXTranslator;
-import com.team319.lib.SRXTranslator.CombinedSRXMotionProfile;
-import com.team319.lib.SRXTranslator.SRXMotionProfile;
+import com.team319.trajectory.CombinedSrxMotionProfile;
 import com.team319.web.UpdatableWebSocketAdapter;
 import com.team319.web.WebServer;
 
@@ -25,15 +24,19 @@ public class TrajectorySocket extends UpdatableWebSocketAdapter {
 	JSONObject latestResult = null;
 
 	final double kWheelbaseWidth = 23.25 / 12;
-	TrajectoryGenerator.Config config;
+	CombinedSrxMotionProfile.Config config;
 
     @Override
     public void initialize() {
-        config = new TrajectoryGenerator.Config();
+        config = new CombinedSrxMotionProfile.Config();
     	config.dt = .01;
     	config.max_acc = 10.0;
     	config.max_jerk = 60.0;
     	config.max_vel = 15.0;
+		config.wheelbase_width = 23.25 / 12;
+		config.wheel_dia = 5.875;
+		config.scale_factor = 2.778;
+		config.direction = -1;
     }
 
     public void onWebSocketText(String message) {
@@ -75,7 +78,7 @@ public class TrajectorySocket extends UpdatableWebSocketAdapter {
 			Path path = PathGenerator.makePath(waypoints, config, kWheelbaseWidth, PathWriter.PATH_NAME);
 
 			SRXTranslator srxt = new SRXTranslator();
-			CombinedSRXMotionProfile combined = srxt.getSRXProfileFromChezyPath(path, 5.875, 2.778);
+			CombinedSrxMotionProfile combined = srxt.getSRXProfileFromChezyPath(path, config);
 
 			latestResult = combined.toJson();
 

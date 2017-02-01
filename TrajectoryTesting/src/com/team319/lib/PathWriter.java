@@ -7,14 +7,14 @@ import java.io.IOException;
 
 import com.team254.lib.trajectory.Path;
 import com.team254.lib.trajectory.io.TextFileSerializer;
-import com.team319.lib.SRXTranslator.CombinedSRXMotionProfile;
+import com.team319.trajectory.CombinedSrxMotionProfile;
 
 public class PathWriter {
 
 	public static final String DIRECTORY = "Paths";
-	public static final String PATH_NAME = "TyPath";
+	public static final String PATH_NAME = "TyPathneg";
 
-	public static boolean writePath(Path path, CombinedSRXMotionProfile combined){
+	public static boolean writePath(Path path, CombinedSrxMotionProfile combined){
 		// Outputs to the directory supplied as the first argument.
 		TextFileSerializer js = new TextFileSerializer();
 		String serialized = js.serialize(path);

@@ -2,7 +2,6 @@ package com.team319.ui;
 
 import com.team254.lib.trajectory.Path;
 import com.team254.lib.trajectory.Trajectory.Segment;
-import com.team319.lib.SRXTranslator.CombinedSRXMotionProfile;
 
 import javafx.application.*;
 import javafx.scene.*;
